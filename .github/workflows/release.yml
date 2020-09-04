@@ -20,7 +20,7 @@ jobs:
         file: "CloudLAN-win64.exe"
 
     - name: Move files to SOURCE_DIR
-      run: pwd && ls && mkdir -p upload/cloudlan-releases/latest/ && mv CloudLAN-win64.exe upload/cloudlan-releases/latest/ && cd upload/cloudlan-releases/latest/ && ls
+      run: mkdir -p upload/cloudlan-releases/latest/ && mv CloudLAN-win64.exe upload/cloudlan-releases/latest/
 
     - name: Upload Content to Digitalocean Spaces
       uses: kodertroop/do-space-sync-action@v1.0.1
