@@ -1,0 +1,27 @@
+  
+name: Release version for Download
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: dsaltares/fetch-gh-release-asset@master
+      with:
+        version: "latest"
+        file: "CloudLAN-win64.exe"
+    - name: Verify deployment
+      run: pwd && ls
+    - uses: idlefingers/do-space-sync-action@master
+      with:
+        args: --acl public-read
+      env:
+        SOURCE_DIR: './public/CloudLAN-win64.exe'
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+        SPACE_REGION: ${{ secrets.SPACE_REGION}}
+        SPACE_ACCESS_KEY_ID: ${{ secrets.SPACE_ACCESS_KEY_ID }}
+        SPACE_SECRET_ACCESS_KEY: ${{ secrets.SPACE_SECRET_ACCESS_KEY }}
