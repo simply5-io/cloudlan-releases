@@ -5,7 +5,7 @@
 [![Github all releases](https://img.shields.io/github/downloads/simply5-io/cloudlan-releases/total.svg)](https://github.com/simply5-io/cloudlan-releases/releases/)
 [![Website simply5.io](https://img.shields.io/website-up-down-green-red/http/simply5.io.svg)](http://simply5.io/)
 ![Ready For Download](https://github.com/simply5-io/cloudlan-releases/workflows/Release%20version%20for%20Download/badge.svg)
-[![HitCount](http://hits.dwyl.com/simply5-io/cloudlan-releases.svg)](http://hits.dwyl.com/simply5-io/cloudlan-releases)
+[![HitCount](http://hits.dwyl.com/simply5-io/cloudlan-releases.svg)](https://github.com/simply5-io/cloudlan-releases)
 
 
 <h1 align="center">
