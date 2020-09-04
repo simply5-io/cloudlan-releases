@@ -3,7 +3,7 @@ name: Release version for Download
 
 on:
   release:
-    types: [published]
+    types: [released,published,edited]
 
 jobs:
   deploy:
