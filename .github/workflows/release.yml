@@ -16,7 +16,7 @@ jobs:
         version: "latest"
         file: "CloudLAN-win64.exe"
     - name: Verify deployment
-      run: pwd && ls && mkdir -p upload/latest && mv CloudLAN-win64.exe upload && cd upload && ls latest
+      run: pwd && ls && mkdir -p upload/latest && mv CloudLAN-win64.exe upload/latest && cd upload && ls latest
     - uses: idlefingers/do-space-sync-action@master
       with:
         args: --acl public-read
