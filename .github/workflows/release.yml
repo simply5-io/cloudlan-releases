@@ -4,25 +4,61 @@ name: Release version for Download
 on:
   release:
     types: [released, edited]
-    # types: [released, prereleased, published, edited, created]
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout to Master branch
       uses: actions/checkout@main
 
-    - name: Fetch Latest Release assets
-      uses: dsaltares/fetch-gh-release-asset@master
-      with:
-        version: "latest"
-        file: "CloudLAN-win64.exe"
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+    - name: Create SOURCE_DIR
+      run: mkdir -p /home/runner/work/clan-client/clan-client/ && cd /home/runner/work/clan-client/clan-client/ && mkdir -p upload/cloudlan/apps/
+      
+    - name: Fetch Latest cl-win64.exe
+      uses: stryd/fetch-release-asset@v1
+      with:  
+        access_token: ${{ github.token }}
+        repo: ${{ github.repository }}
+        version: ${{ steps.get_version.outputs.VERSION }}
+        asset_name: "cl-win64.exe"
+        save_as: "/home/runner/work/clan-client/clan-client/cl-win64.exe"
+
+    - name: Fetch Latest cl-macos.dmg
+      uses: stryd/fetch-release-asset@v1
+      with:  
+        access_token: ${{ github.token }}
+        repo: ${{ github.repository }}
+        version: ${{ steps.get_version.outputs.VERSION }}
+        asset_name: "cl-macos.dmg"
+        save_as: "/home/runner/work/clan-client/clan-client/cl-macos.dmg"
+
+    - name: Fetch Latest cl-debian.deb
+      uses: stryd/fetch-release-asset@v1
+      with:  
+        access_token: ${{ github.token }}
+        repo: ${{ github.repository }}
+        version: ${{ steps.get_version.outputs.VERSION }}
+        asset_name: "cl-debian.deb"
+        save_as: "/home/runner/work/clan-client/clan-client/cl-debian.deb"
+
+    - name: Fetch Latest cl-server
+      uses: stryd/fetch-release-asset@v1
+      with:  
+        access_token: ${{ github.token }}
+        repo: ${{ github.repository }}
+        version: ${{ steps.get_version.outputs.VERSION }}
+        asset_name: "cl-server"
+        save_as: "/home/runner/work/clan-client/clan-client/cl-server"
 
     - name: Move files to SOURCE_DIR
-      run: mkdir -p upload/cloudlan-releases/latest/ && mv CloudLAN-win64.exe upload/cloudlan-releases/latest/
+      run: cd /home/runner/work/clan-client/clan-client/ && ls && mv cl-win64.exe cl-macos.dmg cl-debian.deb cl-server upload/cloudlan/apps/
 
-    - name: Upload Content to Digitalocean Spaces
+    - name: Upload Content to S3
       uses: kodertroop/do-space-sync-action@v1.0.1
       with:
         args: --acl public-read
