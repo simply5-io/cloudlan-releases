@@ -6,59 +6,150 @@ on:
     types: [released, edited]
 
 jobs:
-  release:
+  getVersionJob:
+    name: Get the version
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+
+      - name: Get the version step1
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Echo the version of step1
+        run: echo ${{ steps.get_version.outputs.VERSION }}
+
+  prodReleaseJob:
+    name: Jobs to fetch PRODUCTION assets of release and upload to Spaces
+    needs: getVersionJob
     runs-on: ubuntu-latest
     steps:
+
     - name: Checkout to Master branch
       uses: actions/checkout@main
-
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
     - name: Create SOURCE_DIR
       run: mkdir -p /home/runner/work/clan-client/clan-client/ && cd /home/runner/work/clan-client/clan-client/ && mkdir -p upload/cloudlan/apps/
       
     - name: Fetch Latest cl-win64.exe
+      id: fetch_clwin64
+      if: ${{ success() || failure() }}
       uses: stryd/fetch-release-asset@v1
       with:  
         access_token: ${{ github.token }}
         repo: ${{ github.repository }}
-        version: ${{ steps.get_version.outputs.VERSION }}
+        version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-win64.exe"
         save_as: "/home/runner/work/clan-client/clan-client/cl-win64.exe"
 
+    - name: Move clwin64 to SOURCE_DIR
+      id: fetch_clwin64_moved
+      if: ${{ (success() || failure()) && contains(steps.fetch_clwin64.outputs.location, 'cl-win64') }}
+      run: |
+        cd /home/runner/work/clan-client/clan-client/ && \
+        ls && \
+        mv cl-win64.exe upload/cloudlan/dev/apps/ && \
+        echo ::set-output name=assetFound::true
+
+    - name: Upload cl-win64.exe to Spaces
+      if: ${{ (success() || failure()) && steps.fetch_clwin64_moved.outputs.assetFound == 'true' }}
+      uses: kodertroop/do-space-sync-action@v1.0.1
+      with:
+        args: --acl public-read
+      env:
+        SOURCE_DIR: './upload'
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+        SPACE_REGION: ${{ secrets.SPACE_REGION}}
+        SPACE_ACCESS_KEY_ID: ${{ secrets.SPACE_ACCESS_KEY_ID }}
+        SPACE_SECRET_ACCESS_KEY: ${{ secrets.SPACE_SECRET_ACCESS_KEY }}
+
     - name: Fetch Latest cl-macos.dmg
+      id: fetch_clmacos
+      if: ${{ success() || failure() }}
       uses: stryd/fetch-release-asset@v1
       with:  
         access_token: ${{ github.token }}
         repo: ${{ github.repository }}
-        version: ${{ steps.get_version.outputs.VERSION }}
+        version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-macos.dmg"
         save_as: "/home/runner/work/clan-client/clan-client/cl-macos.dmg"
 
+    - name: Move clmacos to SOURCE_DIR
+      id: fetch_clmacos_moved
+      if: ${{ (success() || failure()) && contains(steps.fetch_clmacos.outputs.location, 'cl-macos') }}
+      run: |
+        cd /home/runner/work/clan-client/clan-client/ && \
+        ls && \
+        mv cl-macos.dmg upload/cloudlan/dev/apps/ && \
+        echo ::set-output name=assetFound::true
+
+    - name: Upload cl-macos.dmg to Spaces
+      if: ${{ (success() || failure()) && steps.fetch_clmacos_moved.outputs.assetFound == 'true' }}
+      uses: kodertroop/do-space-sync-action@v1.0.1
+      with:
+        args: --acl public-read
+      env:
+        SOURCE_DIR: './upload'
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+        SPACE_REGION: ${{ secrets.SPACE_REGION}}
+        SPACE_ACCESS_KEY_ID: ${{ secrets.SPACE_ACCESS_KEY_ID }}
+        SPACE_SECRET_ACCESS_KEY: ${{ secrets.SPACE_SECRET_ACCESS_KEY }}
+
     - name: Fetch Latest cl-debian.deb
+      id: fetch_cldebian
+      if: ${{ success() || failure() }}
       uses: stryd/fetch-release-asset@v1
       with:  
         access_token: ${{ github.token }}
         repo: ${{ github.repository }}
-        version: ${{ steps.get_version.outputs.VERSION }}
+        version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-debian.deb"
         save_as: "/home/runner/work/clan-client/clan-client/cl-debian.deb"
 
+    - name: Move cldebian to SOURCE_DIR
+      id: fetch_cldebian_moved
+      if: ${{ (success() || failure()) && contains(steps.fetch_cldebian.outputs.location, 'cl-debian') }}
+      run: |
+        cd /home/runner/work/clan-client/clan-client/ && \
+        ls && \
+        mv cl-debian.deb upload/cloudlan/dev/apps/ && \
+        echo ::set-output name=assetFound::true
+
+    - name: Upload cl-debian.deb to Spaces
+      if: ${{ (success() || failure()) && steps.fetch_cldebian_moved.outputs.assetFound == 'true' }}
+      uses: kodertroop/do-space-sync-action@v1.0.1
+      with:
+        args: --acl public-read
+      env:
+        SOURCE_DIR: './upload'
+        SPACE_NAME: ${{ secrets.SPACE_NAME }}
+        SPACE_REGION: ${{ secrets.SPACE_REGION}}
+        SPACE_ACCESS_KEY_ID: ${{ secrets.SPACE_ACCESS_KEY_ID }}
+        SPACE_SECRET_ACCESS_KEY: ${{ secrets.SPACE_SECRET_ACCESS_KEY }}
+
     - name: Fetch Latest cl-server
+      id: fetch_clserver
+      if: ${{ success() || failure() }}
       uses: stryd/fetch-release-asset@v1
       with:  
         access_token: ${{ github.token }}
         repo: ${{ github.repository }}
-        version: ${{ steps.get_version.outputs.VERSION }}
+        version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-server"
         save_as: "/home/runner/work/clan-client/clan-client/cl-server"
 
-    - name: Move files to SOURCE_DIR
-      run: cd /home/runner/work/clan-client/clan-client/ && ls && mv cl-win64.exe cl-macos.dmg cl-debian.deb cl-server upload/cloudlan/apps/
+    - name: Move clserver to SOURCE_DIR
+      id: fetch_clserver_moved
+      if: ${{ (success() || failure()) && contains(steps.fetch_clserver.outputs.location, 'cl-server') }}
+      run: |
+        cd /home/runner/work/clan-client/clan-client/ && \
+        ls && \
+        mv cl-server upload/cloudlan/dev/apps/ && \
+        echo ::set-output name=assetFound::true
 
-    - name: Upload Content to S3
+    - name: Upload cl-server to Spaces
+      if: ${{ (success() || failure()) && steps.fetch_clserver_moved.outputs.assetFound == 'true' }}
       uses: kodertroop/do-space-sync-action@v1.0.1
       with:
         args: --acl public-read
