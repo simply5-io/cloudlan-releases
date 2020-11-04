@@ -49,7 +49,7 @@ jobs:
       run: |
         cd /home/runner/work/clan-client/clan-client/ && \
         ls && \
-        mv cl-win64.exe upload/cloudlan/dev/apps/ && \
+        mv cl-win64.exe upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
 
     - name: Upload cl-win64.exe to Spaces
@@ -81,7 +81,7 @@ jobs:
       run: |
         cd /home/runner/work/clan-client/clan-client/ && \
         ls && \
-        mv cl-macos.dmg upload/cloudlan/dev/apps/ && \
+        mv cl-macos.dmg upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
 
     - name: Upload cl-macos.dmg to Spaces
@@ -113,7 +113,7 @@ jobs:
       run: |
         cd /home/runner/work/clan-client/clan-client/ && \
         ls && \
-        mv cl-debian.deb upload/cloudlan/dev/apps/ && \
+        mv cl-debian.deb upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
 
     - name: Upload cl-debian.deb to Spaces
@@ -145,7 +145,7 @@ jobs:
       run: |
         cd /home/runner/work/clan-client/clan-client/ && \
         ls && \
-        mv cl-server upload/cloudlan/dev/apps/ && \
+        mv cl-server upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
 
     - name: Upload cl-server to Spaces
