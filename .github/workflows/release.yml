@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@main
 
     - name: Create SOURCE_DIR
-      run: mkdir -p /home/runner/work/clan-client/clan-client/ && cd /home/runner/work/clan-client/clan-client/ && mkdir -p upload/cloudlan/apps/
+      run: mkdir -p /home/runner/work/cloudlan-releases/cloudlan-releases/ && cd /home/runner/work/cloudlan-releases/cloudlan-releases/ && mkdir -p upload/cloudlan/apps/
       
     - name: Fetch Latest cl-win64.exe
       id: fetch_clwin64
@@ -41,13 +41,13 @@ jobs:
         repo: ${{ github.repository }}
         version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-win64.exe"
-        save_as: "/home/runner/work/clan-client/clan-client/cl-win64.exe"
+        save_as: "/home/runner/work/cloudlan-releases/cloudlan-releases/cl-win64.exe"
 
     - name: Move clwin64 to SOURCE_DIR
       id: fetch_clwin64_moved
       if: ${{ (success() || failure()) && contains(steps.fetch_clwin64.outputs.location, 'cl-win64') }}
       run: |
-        cd /home/runner/work/clan-client/clan-client/ && \
+        cd /home/runner/work/cloudlan-releases/cloudlan-releases/ && \
         ls && \
         mv cl-win64.exe upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
@@ -73,13 +73,13 @@ jobs:
         repo: ${{ github.repository }}
         version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-macos.dmg"
-        save_as: "/home/runner/work/clan-client/clan-client/cl-macos.dmg"
+        save_as: "/home/runner/work/cloudlan-releases/cloudlan-releases/cl-macos.dmg"
 
     - name: Move clmacos to SOURCE_DIR
       id: fetch_clmacos_moved
       if: ${{ (success() || failure()) && contains(steps.fetch_clmacos.outputs.location, 'cl-macos') }}
       run: |
-        cd /home/runner/work/clan-client/clan-client/ && \
+        cd /home/runner/work/cloudlan-releases/cloudlan-releases/ && \
         ls && \
         mv cl-macos.dmg upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
@@ -105,13 +105,13 @@ jobs:
         repo: ${{ github.repository }}
         version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-debian.deb"
-        save_as: "/home/runner/work/clan-client/clan-client/cl-debian.deb"
+        save_as: "/home/runner/work/cloudlan-releases/cloudlan-releases/cl-debian.deb"
 
     - name: Move cldebian to SOURCE_DIR
       id: fetch_cldebian_moved
       if: ${{ (success() || failure()) && contains(steps.fetch_cldebian.outputs.location, 'cl-debian') }}
       run: |
-        cd /home/runner/work/clan-client/clan-client/ && \
+        cd /home/runner/work/cloudlan-releases/cloudlan-releases/ && \
         ls && \
         mv cl-debian.deb upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
@@ -137,13 +137,13 @@ jobs:
         repo: ${{ github.repository }}
         version: ${{ needs.getVersionJob.outputs.VERSION }}
         asset_name: "cl-server"
-        save_as: "/home/runner/work/clan-client/clan-client/cl-server"
+        save_as: "/home/runner/work/cloudlan-releases/cloudlan-releases/cl-server"
 
     - name: Move clserver to SOURCE_DIR
       id: fetch_clserver_moved
       if: ${{ (success() || failure()) && contains(steps.fetch_clserver.outputs.location, 'cl-server') }}
       run: |
-        cd /home/runner/work/clan-client/clan-client/ && \
+        cd /home/runner/work/cloudlan-releases/cloudlan-releases/ && \
         ls && \
         mv cl-server upload/cloudlan/apps/ && \
         echo ::set-output name=assetFound::true
