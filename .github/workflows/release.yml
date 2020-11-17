@@ -159,3 +159,13 @@ jobs:
         SPACE_REGION: ${{ secrets.SPACE_REGION}}
         SPACE_ACCESS_KEY_ID: ${{ secrets.SPACE_ACCESS_KEY_ID }}
         SPACE_SECRET_ACCESS_KEY: ${{ secrets.SPACE_SECRET_ACCESS_KEY }}
+
+    - name: Install doctl
+      if: ${{ (success() || failure()) && (steps.fetch_clwin64_moved.outputs.assetFound == 'true' || steps.fetch_clmacos_moved.outputs.assetFound == 'true' || steps.fetch_cldebian_moved.outputs.assetFound == 'true' || steps.fetch_clserver_moved.outputs.assetFound == 'true') }}
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN_PRODUCTION }}
+
+    - name: Purge the Cache
+      if: ${{ (success() || failure()) && (steps.fetch_clwin64_moved.outputs.assetFound == 'true' || steps.fetch_clmacos_moved.outputs.assetFound == 'true' || steps.fetch_cldebian_moved.outputs.assetFound == 'true' || steps.fetch_clserver_moved.outputs.assetFound == 'true') }}
+      run: doctl compute cdn flush ${{ secrets.SPACE_ENDPOINT_PRO }} --files ["cloudlan/apps/*"]
